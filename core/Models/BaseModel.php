@@ -115,8 +115,8 @@ abstract class BaseModel extends PDO implements DatabaseInterface
     private function addSuffix(string $table, $suffix = 's'): string
     {
         $table = strtolower(substr(strrchr($table, "\\"), 1));
-        if (str_ends_with('s', $table)) return $table;
-        return $table . $suffix;
+        
+        return str_ends_with('s', $table) ? $table : $table . $suffix;
     }
 
     /**
@@ -138,8 +138,8 @@ abstract class BaseModel extends PDO implements DatabaseInterface
     public function values(array $params, $returnCount = false)
     {
         $values = array_values($params);
-        if ($returnCount) return count($values);
-        return $values;
+        
+        return $returnCount ? count($values) : $values;
     }
 
     public function createSqlQuery(array $params, string $type = "insert")
