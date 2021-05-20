@@ -20,11 +20,7 @@ abstract class CommandAbstract
 
     public function validateCommand($environmentArgument)
     {
-        if (array_key_exists($environmentArgument[1], $this->commands)) {
-            return true;
-        } else {
-            return false;
-        }
+        return array_key_exists($environmentArgument[1], $this->commands);
     }
 
     protected function hasOption($environmentArgument)
@@ -32,8 +28,7 @@ abstract class CommandAbstract
         $difference = array_diff($this->commands[$environmentArgument[1]],
             $this->getOptionValues($environmentArgument));
 
-        if (empty($difference)) return true;
-        else return false;
+        return empty($difference);
     }
 
     protected function getOptionValues($environmentArgument)
