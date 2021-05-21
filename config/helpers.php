@@ -23,7 +23,7 @@ function request()
 function view(string $view, array $data = [], $layout = 'app')
 {
     $viewClass = dependencyInjector()->get('View');
-    $viewClass->layout = $layout;
+    $viewClass->setLayout($layout);
     try {
         return $viewClass->render($view, $data);
     } catch (Exception $exception) {
