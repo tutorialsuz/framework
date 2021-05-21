@@ -1,5 +1,7 @@
 <?php
 
+use Core\Auth\Hash;
+
 function includeCommands()
 {
     return require __DIR__ . '/commands.php';
@@ -35,4 +37,17 @@ function str_ends_with($needle, $string): bool
 {
     if (substr($string, -1) === $needle) return true;
     return false;
+}
+
+/**
+ * @throws Exception
+ */
+function csrf_token()
+{
+    echo '<input type="hidden" name="_token" value="' . Hash::token() . '">';
+}
+
+function method($name)
+{
+    echo '<input type="hidden" name="_method" value="' . $name . '">';
 }

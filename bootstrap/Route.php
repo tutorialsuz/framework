@@ -4,7 +4,8 @@
 namespace Bootstrap;
 
 use App\Controllers\Controller;
-use Bootstrap\Requests\Request;
+use Core\Exceptions\BadMethodException;
+use Core\Exceptions\CsrfException;
 use DI\NotFoundException;
 
 class Route extends Controller
@@ -21,7 +22,55 @@ class Route extends Controller
     public function get($url, $controller)
     {
         if (preg_match($this->pattern($url), $this->getUri(), $data)) {
-            $this->set($controller, $this->wildcards($data));
+            try {
+                $this->set($url, $controller, $this->wildcards($data));
+            } catch (BadMethodException $badMethodException) {
+                die($badMethodException->getMessage());
+            }
+        }
+    }
+
+    public function post($url, $controller)
+    {
+        if (preg_match($this->pattern($url), $this->getUri(), $data)) {
+            try {
+                $this->set($url, $controller, $this->wildcards($data));
+            } catch (BadMethodException $badMethodException) {
+                die($badMethodException->getMessage());
+            }
+        }
+    }
+
+    public function put($url, $controller)
+    {
+        if (preg_match($this->pattern($url), $this->getUri(), $data)) {
+            try {
+                $this->set($url, $controller, $this->wildcards($data));
+            } catch (BadMethodException $badMethodException) {
+                die($badMethodException->getMessage());
+            }
+        }
+    }
+
+    public function patch($url, $controller)
+    {
+        if (preg_match($this->pattern($url), $this->getUri(), $data)) {
+            try {
+                $this->set($url, $controller, $this->wildcards($data));
+            } catch (BadMethodException $badMethodException) {
+                die($badMethodException->getMessage());
+            }
+        }
+    }
+
+    public function delete($url, $controller)
+    {
+        if (preg_match($this->pattern($url), $this->getUri(), $data)) {
+            try {
+                $this->set($url, $controller, $this->wildcards($data));
+            } catch (BadMethodException $badMethodException) {
+                die($badMethodException->getMessage());
+            }
         }
     }
 
@@ -30,10 +79,13 @@ class Route extends Controller
      */
     private function discoverRoute()
     {
-        if (!$this->route) throw new NotFoundException(sprintf(
-                "The requested route <b>%s</b> is not found on server", $this->getUri())
-        );
-        $this->dispatch($this->route['controller'], $this->route);
+        if (is_null($this->route['url']))
+            throw new NotFoundException(sprintf(
+                    "The requested route <b>%s</b> is not found on server", $this->getUri())
+            );
+
+        if (isset($this->route['controller']))
+            $this->dispatch($this->route['controller'], $this->route);
     }
 
     /**
@@ -58,9 +110,24 @@ class Route extends Controller
         return $result;
     }
 
-    private function set($controller, $data)
+    /**
+     * @throws BadMethodException
+     */
+    private function set($url, $controller, $data)
     {
-        $this->route = $data;
+        $called_method = debug_backtrace()[1]['function'];
+        $this->route['url'] = $url;
+        try {
+            if ($this->isCurrentRoute($url) && !$this->isMethod($called_method))
+                throw new BadMethodException("This method is not acceptable for this route");
+
+            if (isset($this->all()['_method']) && ($called_method !== strtolower($this->all()['_method']))) {
+                throw new BadMethodException("This method is not acceptable for this route");
+            }
+        } catch (CsrfException $csrfException) {
+            die($csrfException->getMessage());
+        }
+        $this->route['data'] = $data;
         $this->route['controller'] = $controller;
     }
 
@@ -69,7 +136,7 @@ class Route extends Controller
         try {
             $this->discoverRoute();
         } catch (NotFoundException $notFoundException) {
-            echo $notFoundException->getMessage();
+            die($notFoundException->getMessage());
         }
     }
 }
