@@ -13,7 +13,7 @@ abstract class CommandAbstract
 
     public function __construct()
     {
-        $this->commands = includeCommands();
+        $this->commands = commands();
     }
 
     abstract public function execute();

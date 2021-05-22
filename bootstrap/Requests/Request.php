@@ -7,6 +7,7 @@ namespace Bootstrap\Requests;
 use Core\Auth\Hash;
 use Core\Exceptions\CsrfException;
 use Core\Session\Session;
+use Core\Session\SessionFlash;
 
 class Request
 {
@@ -62,7 +63,7 @@ class Request
 
     public function setMethod(string $method)
     {
-        $_SERVER['REQUEST_METHOD'] = $method;
+        $_SERVER['REQUEST_METHOD'] = strtoupper($method);
     }
 
     /**
@@ -99,5 +100,28 @@ class Request
         return isset($_REQUEST["_token"]) &&
             Session::has("_token") &&
             Hash::check($system_token, $user_token, false);
+    }
+
+    /**
+     * @return $this
+     */
+    public function back(): Request
+    {
+        header("location:javascript://history.go(-1)");
+        return $this;
+    }
+
+    public function with($key, $value = null): ?array
+    {
+        if (is_array($key)) return SessionFlash::set($key);
+
+        if ($value === null) return null;
+
+        return SessionFlash::set($key, $value);
+    }
+
+    public function sessions(): array
+    {
+        return Session::all();
     }
 }

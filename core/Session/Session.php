@@ -13,11 +13,11 @@ class Session
         return session_start();
     }
 
-    public static function put(string $key, $value)
+    public static function put(string $key, $value): array
     {
         if (empty(static::id()))
             static::start();
-        self::set($key, $value);
+        return self::set($key, $value);
     }
 
     public static function get(string $key, $default = "")
@@ -78,5 +78,31 @@ class Session
             static::start();
         }
         return isset($_SESSION[$key]);
+    }
+
+    public static function all(): array
+    {
+        if (empty(session_id()))
+            static::start();
+
+        if (array_key_exists("tuts_flash_mess_container", $_SESSION))
+            unset($_SESSION['tuts_flash_mess_container']);
+        return $_SESSION;
+    }
+
+    public static function delete($key)
+    {
+        if (empty(session_id()))
+            static::start();
+
+        unset($_SESSION[$key]);
+    }
+
+    public static function destroy(): bool
+    {
+        if (empty(session_id()))
+            static::start();
+
+        return session_destroy();
     }
 }
