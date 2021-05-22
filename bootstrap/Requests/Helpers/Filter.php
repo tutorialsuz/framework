@@ -12,7 +12,7 @@ class Filter
         foreach ($validated as $formname => $validate) {
             if ($validate === false)
                 $errors[$formname] = sprintf(
-                    '<span style="color: red;"><b>%s</b> input field should be %s</span>', $formname, $rules[$formname]
+                    '%s input field should be %s', $formname, $rules[$formname]
                 );
         }
 
