@@ -21,9 +21,9 @@ class Hash
      * @param $unhashed_value
      * @return bool
      */
-    public static function check(string $hashed_value, $unhashed_value, $token = false): bool
+    public static function check(string $hashed_value, $unhashed_value, $password = true): bool
     {
-        return $token ? password_verify($unhashed_value, $hashed_value) :
+        return $password ? password_verify($unhashed_value, $hashed_value) :
             hash_equals($hashed_value, $unhashed_value);
     }
 

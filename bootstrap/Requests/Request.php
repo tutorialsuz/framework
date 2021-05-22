@@ -98,6 +98,6 @@ class Request
 
         return isset($_REQUEST["_token"]) &&
             Session::has("_token") &&
-            Hash::check($system_token, $user_token);
+            Hash::check($system_token, $user_token, false);
     }
 }
