@@ -8,3 +8,6 @@ $route->get('/', [HomeController::class, 'index']);
 $route->get('user/{id}', function($id) {
     echo $id;
 });
+
+$route->get('users/create', [HomeController::class, 'create']);
+$route->post('users', [HomeController::class, 'store']);

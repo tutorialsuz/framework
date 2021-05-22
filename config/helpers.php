@@ -15,7 +15,9 @@ if (!function_exists('app')) {
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    function app() {
+    function app($key = null) {
+        if (!is_null($key))
+            return dependencyInjector()->get($key);
         return dependencyInjector()->get('Application');
     }
 }
@@ -78,14 +80,6 @@ if (!function_exists('session')) {
     function session($key, $value = null) {
         if ($value === null)
             return Session::get($key);
-
-        if (is_array($key)) {
-            foreach (array_keys($key) as $session) {
-                Session::put($session, $key[$session]);
-            }
-            return true;
-        }
-
         return Session::put($key, $value);
     }
 }

@@ -13,37 +13,47 @@ class Session
         return session_start();
     }
 
-    public static function put(string $key, $value): array
+    public static function put($key, $value = null): array
     {
         if (empty(static::id()))
             static::start();
+
+        if (is_array($key) && $value === null) {
+            foreach ($key as $s_key => $s_val) {
+                self::set($s_key, $s_val);
+            }
+            return self::set();
+        }
         return self::set($key, $value);
     }
 
-    public static function get(string $key, $default = "")
+    public static function &get(string $key, $default = "")
     {
-        return self::get_sess($key);
+        $session = self::get_sess($key);
+        return $session;
     }
 
     /**
-     * @param string $key
+     * @param string|null $key
      * @param $value
+     * @return array
      */
-    public static function set(string $key, $value): array
+    public static function set(string $key = null, $value = null): array
     {
         if (empty(static::id()))
             static::start();
 
-        $_SESSION[$key] = $value;
+        if ($value !== null)
+            $_SESSION[$key] = $value;
         return $_SESSION;
     }
 
     /**
      * @param string $key
-     * @param $value
-     * @return array
+     * @param string $default
+     * @return string|array
      */
-    public static function get_sess(string $key, $default = "")
+    public static function get_sess(string $key, string $default = "")
     {
         if (empty(static::id()))
             static::start();

@@ -16,12 +16,15 @@ php do server
 
 use App\Controllers\HomeController;
 
-// Adding wildcard with colon character
+$route->get('/', [HomeController::class, 'index']);
+
+// Routing with wildcards
 $route->get('user/{id}', function($id) {
     echo $id;
 });
 
-$route->get('/', [HomeController::class, 'index']);
+$route->get('users/create', [HomeController::class, 'create']);
+$route->post('users', [HomeController::class, 'store']);
 ```
 
 # Available database accessor (model) methods
@@ -51,7 +54,13 @@ class User extends Model
 namespace App\Controllers;
 
 use App\Models\User;
+use Bootstrap\Requests\Helpers\Filter;
+use Bootstrap\Requests\Helpers\FilterTrait;
+use Bootstrap\Requests\Request;
+use Core\Session\Session;
+use Core\Session\SessionFlash;
 use Exception;
+use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
@@ -60,8 +69,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = User::where(['is_customer' => 1, 'status' => 'confirmed'])->get();
-        return view('welcome', compact('user'));
+        return view('welcome');
+    }
+
+    public function create()
+    {
+        return view('user/create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = Filter::validate([
+            'email' => 'email',
+            'phone' => 'integer'
+        ]);
+
+        echo "validated page";
     }
 }
 

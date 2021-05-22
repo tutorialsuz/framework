@@ -105,15 +105,27 @@ class Request
     /**
      * @return $this
      */
-    public function back(): Request
+    public function back($without_update = false): Request
     {
-        header("location:javascript://history.go(-1)");
+        if ($without_update)
+            header("location: javascript://history.go(-1)", true, 302);
+        header("location: " . $_SERVER['HTTP_REFERER'], true, 302);
+        return $this;
+    }
+
+    public function route($route, $status = 302): Request
+    {
+        header("Location: " . trim($route, "/"), true, $status);
         return $this;
     }
 
     public function with($key, $value = null): ?array
     {
-        if (is_array($key)) return SessionFlash::set($key);
+        if (is_array($key)) {
+            $setted = SessionFlash::set($key);
+            var_dump($setted);
+            return $setted;
+        }
 
         if ($value === null) return null;
 
@@ -123,5 +135,12 @@ class Request
     public function sessions(): array
     {
         return Session::all();
+    }
+
+    public function where(array $names)
+    {
+        return array_filter($this->all(), function ($key) use ($names) {
+            return in_array($key, $names);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

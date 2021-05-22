@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Bootstrap\Helpers;
-
 
 trait ArrayHelper
 {
@@ -38,5 +36,15 @@ trait ArrayHelper
     protected function keyExists(string $key, array $array)
     {
         return array_key_exists($key, $array);
+    }
+
+    public static function dotSet(array &$target, $notation, $end_value)
+    {
+        $dot_notation_array = explode(".", $notation);
+        foreach ($dot_notation_array as $dot_notation_value) {
+            $target = &$target[$dot_notation_value];
+        }
+        $last_key = array_key_last($target);
+        $target = $end_value;
     }
 }
