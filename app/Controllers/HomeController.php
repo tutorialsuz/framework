@@ -2,14 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use Bootstrap\Requests\Helpers\Filter;
-use Bootstrap\Requests\Helpers\FilterTrait;
 use Bootstrap\Requests\Request;
-use Core\Session\Session;
-use Core\Session\SessionFlash;
-use Exception;
-use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
