@@ -2,11 +2,8 @@
 
 namespace Bootstrap\Requests\Helpers;
 
-use Core\Session\Session;
-
 class Filter
 {
-
     public static function validate(array $rules)
     {
         $validated = static::passes($rules);
