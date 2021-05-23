@@ -76,9 +76,9 @@ class Session
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public static function id(): int
+    public static function id(): string
     {
         return session_id();
     }
@@ -143,11 +143,14 @@ class Session
         return session_destroy();
     }
 
-    public static function refresh()
+    /**
+     * @return bool
+     */
+    public static function refresh(): bool
     {
         if (empty(session_id()))
             static::start();
 
-        session_regenerate_id();
+        return session_regenerate_id();
     }
 }

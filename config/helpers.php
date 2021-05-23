@@ -1,8 +1,11 @@
 <?php
 
+use Bootstrap\Helpers\Arr;
 use Core\Auth\Hash;
 use Core\Session\Session;
 use Core\Session\SessionFlash;
+use DI\DependencyException;
+use DI\NotFoundException;
 
 if (!function_exists('commands')) {
     function commands() {
@@ -12,8 +15,8 @@ if (!function_exists('commands')) {
 
 if (!function_exists('app')) {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     function app($key = null) {
         if (!is_null($key))
@@ -24,8 +27,8 @@ if (!function_exists('app')) {
 
 if (!function_exists('request')) {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     function request() {
         return dependencyInjector()->get('request');
@@ -34,8 +37,8 @@ if (!function_exists('request')) {
 
 if (!function_exists('view')) {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     function view(string $view, array $data = [], $layout = 'app') {
         $viewClass = dependencyInjector()->get('View');
@@ -83,3 +86,55 @@ if (!function_exists('session')) {
         return Session::put($key, $value);
     }
 }
+
+if (!function_exists('auth_config')) {
+    function auth_config($target) {
+        return Arr::getNest(cinclude('auth'), $target);
+    }
+}
+
+if (!function_exists('guard')) {
+    function guard($guard) {
+        return Arr::getNest(cinclude('auth'), "guards.{$guard}");
+    }
+}
+
+if (!function_exists('provider')) {
+    function provider($provider) {
+        return Arr::getNest(cinclude('auth'), "providers.{$provider}");
+    }
+}
+
+// config include = cinclude
+if (!function_exists('cinclude')) {
+    function cinclude($target) {
+        return include "{$target}.php";
+    }
+}
+
+if (!function_exists('asset')) {
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+
+    function asset($asset): string
+    {
+        return baseurl() . DIRECTORY_SEPARATOR . $asset;
+    }
+}
+
+if (!function_exists('baseurl')) {
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    function baseurl($full = false) {
+        $base = request()->getBaseUrl();
+        $rest = request()->getUri();
+        return $full ? $base . $rest : $base;
+    }
+}
+

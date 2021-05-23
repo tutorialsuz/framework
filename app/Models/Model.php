@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Core\Exceptions\UnresolveableMethodException;
+use DI\DependencyException;
+use DI\NotFoundException;
 
 class Model
 {
     /**
      * @return mixed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function model()
+    public static function model()
     {
         return dependencyInjector()->get('Model');
     }
@@ -21,8 +23,8 @@ class Model
      * @param $parameters
      * @return mixed
      * @throws UnresolveableMethodException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public static function __callStatic($methodName, $parameters)
     {
@@ -41,5 +43,10 @@ class Model
         throw new UnresolveableMethodException(
             sprintf("%s method is not found", $methodName)
         );
+    }
+
+    public function __set($name, $value)
+    {
+        $this->$name = stripslashes($value);
     }
 }

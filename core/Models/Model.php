@@ -1,9 +1,8 @@
 <?php
 
-
 namespace Core\Models;
 
-use PDOException;
+use ReflectionException;
 
 class Model extends BaseModel
 {
@@ -14,7 +13,8 @@ class Model extends BaseModel
 
     /**
      * @param array $params
-     * @return mixed|void
+     * @return void
+     * @throws ReflectionException
      */
     public function create(array $params)
     {
@@ -33,6 +33,7 @@ class Model extends BaseModel
     /**
      * @param $condition
      * @return mixed|void
+     * @throws ReflectionException
      */
     public function where(array $condition)
     {
@@ -56,6 +57,7 @@ class Model extends BaseModel
      */
     public function get()
     {
+        $this->statement->setFetchMode(self::FETCH_CLASS, $this->reflection->name);
         return $this->statement->fetchAll();
     }
 
@@ -64,7 +66,8 @@ class Model extends BaseModel
      */
     public function first()
     {
-        // TODO: Implement first() method.
+        $this->statement->setFetchMode(self::FETCH_CLASS, $this->reflection->name);
+        return $this->statement->fetch();
     }
 
     /**

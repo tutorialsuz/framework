@@ -7,6 +7,7 @@ use Exception;
 use PDO;
 use PDOException;
 use ReflectionClass;
+use ReflectionException;
 
 abstract class BaseModel extends PDO implements DatabaseInterface
 {
@@ -30,7 +31,6 @@ abstract class BaseModel extends PDO implements DatabaseInterface
 
     /**
      * BaseModel constructor.
-     * @param ReflectionClass|null $reflectionClass
      */
     public function __construct()
     {
@@ -44,7 +44,7 @@ abstract class BaseModel extends PDO implements DatabaseInterface
     /**
      * @return array|false|string
      */
-    private function getCredentials()
+    protected function getCredentials()
     {
         return [
             // DSN
@@ -73,7 +73,7 @@ abstract class BaseModel extends PDO implements DatabaseInterface
      * @param bool $returnObject
      * @return string|object
      */
-    public function getCalledClass($returnObject = false)
+    public function getCalledClass(bool $returnObject = false)
     {
         return $returnObject ? (new $this->called_class) : $this->called_class;
     }
@@ -96,6 +96,7 @@ abstract class BaseModel extends PDO implements DatabaseInterface
 
     /**
      * @return string|array
+     * @throws ReflectionException
      */
     public function tableName()
     {
@@ -112,7 +113,7 @@ abstract class BaseModel extends PDO implements DatabaseInterface
      * @param string $suffix
      * @return string
      */
-    private function addSuffix(string $table, $suffix = 's'): string
+    private function addSuffix(string $table, string $suffix = 's'): string
     {
         $table = strtolower(substr(strrchr($table, "\\"), 1));
         
@@ -124,7 +125,7 @@ abstract class BaseModel extends PDO implements DatabaseInterface
      * @param string $escapeSequence
      * @return string
      */
-    public function tables(array $params, $escapeSequence = "`"): string
+    public function tables(array $params, string $escapeSequence = "`"): string
     {
         $tables = implode("{$escapeSequence},{$escapeSequence}", array_keys($params));
         return sprintf("{$escapeSequence}%s{$escapeSequence}", $tables);
@@ -135,14 +136,24 @@ abstract class BaseModel extends PDO implements DatabaseInterface
      * @param false $returnCount
      * @return array|int
      */
-    public function values(array $params, $returnCount = false)
+    public function values(array $params, bool $returnCount = false)
     {
-        $values = array_values($params);
+        $values = array_values(
+            array_map('htmlspecialchars',
+                array_map('addslashes', $params)
+            )
+        );
         
         return $returnCount ? count($values) : $values;
     }
 
-    public function createSqlQuery(array $params, string $type = "insert")
+    /**
+     * @param array $params
+     * @param string $type
+     * @return string
+     * @throws ReflectionException
+     */
+    public function createSqlQuery(array $params, string $type = "insert"): string
     {
         $placeholders = rtrim(
             str_repeat('?,',
@@ -167,7 +178,11 @@ abstract class BaseModel extends PDO implements DatabaseInterface
         }
     }
 
-    public function placeholderize(array $parameters)
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    public function placeholderize(array $parameters): array
     {
         $result = [];
         $tableAndValues = array_map(function($key, $value) {
@@ -179,7 +194,11 @@ abstract class BaseModel extends PDO implements DatabaseInterface
         return $result;
     }
 
-    public function multipleCondition(array $params)
+    /**
+     * @param array $params
+     * @return string
+     */
+    public function multipleCondition(array $params): string
     {
         $clause = "";
         $i = 1;

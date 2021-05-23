@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use Bootstrap\Requests\Request;
+use Core\Auth\Auth;
+use Core\Session\Session;
 
 class HomeController extends Controller
 {

@@ -46,6 +46,15 @@ class Request
     }
 
     /**
+     * @return mixed
+     */
+    public function getBaseUrl()
+    {
+        $httpOrHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+        return $httpOrHttps . $_SERVER['HTTP_HOST'];
+    }
+
+    /**
      * @param $key
      * @return string|null
      */
@@ -78,7 +87,7 @@ class Request
     public function isMethod(string $method): bool
     {
         if ($this->getMethod() !== "GET" && !$this->hasCsrfToken())
-            throw new CsrfException("CSRF attack detected");
+            throw new CsrfException("Page is expired");
 
         if (isset($this->all()['_method'])) {
             $this->setMethod($this->all()['_method']);

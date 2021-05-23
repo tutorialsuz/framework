@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=K2D:300,400,500,700,800" rel="stylesheet">
 
     <!-- Bootstrap CSS / Color Scheme -->
-    <link rel="stylesheet" href="https://webresourcesdepot.com/demo/prism/css/bootstrap.css">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
 </head>
 <body>
 

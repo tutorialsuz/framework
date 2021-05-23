@@ -3,12 +3,12 @@
 
 namespace Bootstrap;
 
-use Bootstrap\Helpers\ArrayHelper;
+use Bootstrap\Helpers\Arr;
 use Bootstrap\Requests\Request;
 
 class UrlManager extends Request
 {
-    use ArrayHelper;
+    use Arr;
 
     protected function is($route): bool
     {
