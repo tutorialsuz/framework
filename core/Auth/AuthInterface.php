@@ -2,8 +2,6 @@
 
 namespace Core\Auth;
 
-use App\Models\Model;
-
 interface AuthInterface
 {
     /**
