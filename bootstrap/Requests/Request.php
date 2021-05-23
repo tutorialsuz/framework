@@ -4,6 +4,7 @@
 namespace Bootstrap\Requests;
 
 
+use Bootstrap\Requests\Helpers\Filter;
 use Core\Auth\Hash;
 use Core\Exceptions\CsrfException;
 use Core\Session\Session;
@@ -61,6 +62,9 @@ class Request
         return $key ? $_REQUEST[$key] : $_REQUEST;
     }
 
+    /**
+     * @param string $method
+     */
     public function setMethod(string $method)
     {
         $_SERVER['REQUEST_METHOD'] = strtoupper($method);
@@ -105,7 +109,7 @@ class Request
     /**
      * @return $this
      */
-    public function back($without_update = false): Request
+    public function back(bool $without_update = false): Request
     {
         if ($without_update)
             header("location: javascript://history.go(-1)", true, 302);
@@ -113,12 +117,22 @@ class Request
         return $this;
     }
 
-    public function route($route, $status = 302): Request
+    /**
+     * @param $route
+     * @param int $status
+     * @return $this
+     */
+    public function route($route, int $status = 302): Request
     {
         header("Location: " . trim($route, "/"), true, $status);
         return $this;
     }
 
+    /**
+     * @param $key
+     * @param null $value
+     * @return array|null
+     */
     public function with($key, $value = null): ?array
     {
         if (is_array($key)) {
@@ -132,15 +146,27 @@ class Request
         return SessionFlash::set($key, $value);
     }
 
+    /**
+     * @return array
+     */
     public function sessions(): array
     {
         return Session::all();
     }
 
+    /**
+     * @param array $names
+     * @return array|string
+     */
     public function where(array $names)
     {
         return array_filter($this->all(), function ($key) use ($names) {
             return in_array($key, $names);
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    public function validate(array $rules)
+    {
+        return Filter::validate($rules);
     }
 }
