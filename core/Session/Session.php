@@ -13,6 +13,11 @@ class Session
         return session_start();
     }
 
+    /**
+     * @param $key
+     * @param null $value
+     * @return array
+     */
     public static function put($key, $value = null): array
     {
         if (empty(static::id()))
@@ -27,7 +32,12 @@ class Session
         return self::set($key, $value);
     }
 
-    public static function &get(string $key, $default = "")
+    /**
+     * @param string $key
+     * @param string $default
+     * @return array|string
+     */
+    public static function &get(string $key, string $default = "")
     {
         $session = self::get_sess($key);
         return $session;
@@ -68,11 +78,15 @@ class Session
     /**
      * @return int
      */
-    public static function id()
+    public static function id(): int
     {
         return session_id();
     }
 
+    /**
+     * @param null $name
+     * @return false|string
+     */
     public static function name($name = null)
     {
         if (!is_null($name)) {
@@ -82,6 +96,10 @@ class Session
         return session_name();
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public static function has($key): bool
     {
         if (empty(session_id())) {
@@ -90,6 +108,9 @@ class Session
         return isset($_SESSION[$key]);
     }
 
+    /**
+     * @return array
+     */
     public static function all(): array
     {
         if (empty(session_id()))
@@ -100,6 +121,9 @@ class Session
         return $_SESSION;
     }
 
+    /**
+     * @param $key
+     */
     public static function delete($key)
     {
         if (empty(session_id()))
@@ -108,11 +132,22 @@ class Session
         unset($_SESSION[$key]);
     }
 
+    /**
+     * @return bool
+     */
     public static function destroy(): bool
     {
         if (empty(session_id()))
             static::start();
 
         return session_destroy();
+    }
+
+    public static function refresh()
+    {
+        if (empty(session_id()))
+            static::start();
+
+        session_regenerate_id();
     }
 }
