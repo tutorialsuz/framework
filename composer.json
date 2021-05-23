@@ -15,7 +15,7 @@
             "Core\\": "core/",
             "Bootstrap\\": "bootstrap/"
         },
-        "files": ["config/dic.php", "config/helpers.php"],
+        "files": ["config/dic.php", "config/helpers.php", "config/filters.php"],
         "classmap": ["config/Kernel.php", "bootstrap/Requests/Request.php"]
     }
 }

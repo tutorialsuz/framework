@@ -23,10 +23,10 @@ class HomeController extends Controller
     public function store(Request $request)
     {
         $validated = Filter::validate([
-            'email' => 'email',
+            'email' => 'required',
             'phone' => 'integer'
         ]);
 
-        echo "validated page";
+        echo "Email: {$validated['email']} | Phone: {$validated['phone']}";
     }
 }

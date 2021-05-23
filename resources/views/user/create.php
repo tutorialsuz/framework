@@ -8,7 +8,7 @@
     <title>ToPHP framework | Users create sample</title>
 </head>
 <body>
-<form action="http://127.0.0.1:99/users" method="POST">
+<form action="http://127.0.0.1:100/users" method="POST">
     <?= csrf_token() ?>
     <?= flash('email') ?>
     <input type="text" name="email" placeholder="email">

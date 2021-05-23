@@ -53,6 +53,7 @@ class Filters
           self::VALIDATE_IP => FILTER_VALIDATE_IP,
           self::VALIDATE_URL => FILTER_VALIDATE_URL,
           self::VALIDATE_REQUIRED => [
+              'filter' => FILTER_CALLBACK,
               'options' => 'required'
           ]
         ];
