@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use Bootstrap\Requests\Helpers\Filter;
 use Bootstrap\Requests\Request;
 
 class HomeController extends Controller
@@ -15,14 +14,22 @@ class HomeController extends Controller
         return view('welcome');
     }
 
+    /**
+     * @return mixed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function create()
     {
         return view('user/create');
     }
 
+    /**
+     * @param Request $request
+     */
     public function store(Request $request)
     {
-        $validated = Filter::validate([
+        $validated = $request->validate([
             'email' => 'required',
             'phone' => 'integer'
         ]);
