@@ -31,11 +31,21 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
+        // Verify CSRF token
+        if (!Session::verifyToken($request->input('_token'))) {
+            http_response_code(403);
+            return 'Invalid CSRF token';
+        }
+
         $validated = $request->validate([
-            'email' => 'required',
-            'phone' => 'integer'
+            'email' => 'required|email|max:255',
+            'phone' => 'required|regex:/^[0-9]{10,15}$/' // Validates phone numbers between 10-15 digits
         ]);
 
-        echo "Email: {$validated['email']} | Phone: {$validated['phone']}";
+        // Sanitize and escape output
+        $safeEmail = htmlspecialchars($validated['email'], ENT_QUOTES, 'UTF-8');
+        $safePhone = htmlspecialchars($validated['phone'], ENT_QUOTES, 'UTF-8');
+        
+        echo "Email: {$safeEmail} | Phone: {$safePhone}";
     }
 }

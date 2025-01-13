@@ -17,5 +17,8 @@
         },
         "files": ["config/dic.php", "config/helpers.php", "config/filters.php", "config/auth.php"],
         "classmap": ["config/Kernel.php", "bootstrap/Requests/Request.php"]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
     }
 }

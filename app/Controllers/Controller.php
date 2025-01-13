@@ -13,7 +13,7 @@ class Controller extends UrlManager
      */
     protected function dispatch(callable $callable, array $params)
     {
-        array_push($params['data'], request());
-        return call_user_func_array($callable, $params['data']);
+        $data = isset($params['data']) ? array_values($params['data']) : [];
+        return call_user_func_array($callable, $data);
     }
 }
